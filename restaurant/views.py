@@ -9,10 +9,18 @@ from .models import Restaurant, Menu
 
 class RestaurantView(View):
     def post(self, request):
-        data = json.loads(request.body)
+        try:
+            key_requirements = ('name', 'description', 'address', 'phone_number')
+            data = json.loads(request.body)
 
-        restaurant = Restaurant.objects.create(**data)
-        return JsonResponse(restaurant.to_json('id', 'name', 'description', 'address', 'phone_number'), status=201)
+            for key in key_requirements:
+                if not data[key]:
+                    return HttpResponse(status=400)
+
+            restaurant = Restaurant.objects.create(**data)
+            return JsonResponse(restaurant.to_json('id', 'name', 'description', 'address', 'phone_number'), status=201)
+        except KeyError:
+            return HttpResponse(status=400)
 
     def get(self, request, restaurant_id=0):
         try:
@@ -40,7 +48,12 @@ class RestaurantListView(View):
 class MenuView(View):
     def post(self, request):
         try:
+            key_requirements = ('restaurant_id', 'name', 'price')
             data = json.loads(request.body)
+
+            for key in key_requirements:
+                if not data[key]:
+                    return HttpResponse(status=400)
 
             menu = Menu.objects.create(**data)
             return JsonResponse(menu.to_json('id', 'name', 'price'), status=201)
