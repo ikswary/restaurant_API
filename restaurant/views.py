@@ -14,11 +14,16 @@ class RestaurantView(View):
         return JsonResponse(restaurant.to_json('id', 'name', 'description', 'address', 'phone_number'), status=201)
 
     def get(self, request, restaurant_id):
-        restaurant = Restaurant.objects.prefetch_related('menu_set').get(id=restaurant_id)
-        restaurant_info = restaurant.to_json('id', 'name', 'description', 'address', 'phone_number')
-        restaurant_info['menus'] = restaurant.get_menu_list()
+        try:
+            restaurant = Restaurant.objects.prefetch_related('menu_set').get(id=restaurant_id)
+            restaurant_info = restaurant.to_json('id', 'name', 'description', 'address', 'phone_number')
+            restaurant_info['menus'] = restaurant.get_menu_list()
 
-        return JsonResponse(restaurant_info, status=200)
+            return JsonResponse(restaurant_info, status=200)
+
+        except Restaurant.DoesNotExist:
+            return HttpResponse(status=400)
+
 
 class RestaurantListView(View):
     def get(self, request):
