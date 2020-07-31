@@ -27,8 +27,11 @@ class RestaurantView(View):
 
 
 class RestaurantListView(View):
+    NUMBER_IN_PAGE = 20
+
     def get(self, request, page=1):
-        restaurants = Restaurant.objects.all()[(page - 1) * 20:page + 20]
+        offset = (page - 1) * self.NUMBER_IN_PAGE
+        restaurants = Restaurant.objects.all()[offset:offset + self.NUMBER_IN_PAGE]
         restaurant_list = [restaurant.to_json('id', 'name', 'address', 'phone_number') for restaurant in restaurants]
 
         return JsonResponse({'list': restaurant_list}, status=200)
