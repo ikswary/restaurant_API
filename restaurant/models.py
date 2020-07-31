@@ -27,3 +27,10 @@ class Menu(models.Model):
 
     class Meta:
         db_table = 'menus'
+
+    def to_json(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "price": self.price
+        }

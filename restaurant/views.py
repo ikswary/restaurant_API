@@ -1,9 +1,9 @@
 import json
 
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse
 from django.views import View
 
-from .models import Restaurant
+from .models import Restaurant, Menu
 
 
 class RestaurantView(View):
@@ -12,3 +12,14 @@ class RestaurantView(View):
 
         restaurant = Restaurant.objects.create(**data)
         return JsonResponse(restaurant.to_json(), status=201)
+
+
+class MenuView(View):
+    def post(self, request):
+        data = json.loads(request.body)
+
+        menu = Menu.objects.create(**data)
+        return JsonResponse(menu.to_json(), status=201)
+
+
+
