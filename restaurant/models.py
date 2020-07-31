@@ -18,7 +18,16 @@ class Restaurant(models.Model):
             "address": self.address,
             "phone_number": self.phone_number
         }
+    def get_restaurant_list(self):
+        return [{'id': restaurant.id,
+                 'name': restaurant.name,
+                 'price': restaurant.address,
+                 'phone_number': restaurant.phone_number} for restaurant in self.objects.all()]
 
+    def get_menu_list(self):
+        return [{'id': menu.id,
+                 'name': menu.name,
+                 'price': menu.price} for menu in self.menu_set.all()]
 
 class Menu(models.Model):
     restaurant = models.ForeignKey(Restaurant, on_delete=models.PROTECT, null=False)
