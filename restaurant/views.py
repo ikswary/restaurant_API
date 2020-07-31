@@ -14,7 +14,7 @@ class RestaurantView(View):
         restaurant = Restaurant.objects.create(**data)
         return JsonResponse(restaurant.to_json('id', 'name', 'description', 'address', 'phone_number'), status=201)
 
-    def get(self, request, restaurant_id):
+    def get(self, request, restaurant_id=0):
         try:
             restaurant = Restaurant.objects.prefetch_related('menu_set').get(id=restaurant_id)
             restaurant_info = restaurant.to_json('id', 'name', 'description', 'address', 'phone_number')
