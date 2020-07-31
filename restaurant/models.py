@@ -10,24 +10,15 @@ class Restaurant(models.Model):
     class Meta:
         db_table = 'restaurants'
 
-    def to_json(self):
-        return {
-            "id": self.id,
-            "name": self.name,
-            "description": self.description,
-            "address": self.address,
-            "phone_number": self.phone_number
-        }
+    def to_json(self, *keys):
+        return {key: self.__dict__[key] for key in keys}
+
     def get_restaurant_list(self):
-        return [{'id': restaurant.id,
-                 'name': restaurant.name,
-                 'price': restaurant.address,
-                 'phone_number': restaurant.phone_number} for restaurant in self.objects.all()]
+        return [restaurant.to_json('id', 'name', 'address', ' phone_number') for restaurant in self.objects.all()]
 
     def get_menu_list(self):
-        return [{'id': menu.id,
-                 'name': menu.name,
-                 'price': menu.price} for menu in self.menu_set.all()]
+        return [menu.to_json('id', 'name', 'price') for menu in self.menu_set.all()]
+
 
 class Menu(models.Model):
     restaurant = models.ForeignKey(Restaurant, on_delete=models.PROTECT, null=False)
@@ -37,9 +28,5 @@ class Menu(models.Model):
     class Meta:
         db_table = 'menus'
 
-    def to_json(self):
-        return {
-            "id": self.id,
-            "name": self.name,
-            "price": self.price
-        }
+    def to_json(self, *keys):
+        return {key: self.__dict__[key] for key in keys}
