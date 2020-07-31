@@ -10,6 +10,15 @@ class Restaurant(models.Model):
     class Meta:
         db_table = 'restaurants'
 
+    def to_json(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "description": self.description,
+            "address": self.address,
+            "phone_number": self.phone_number
+        }
+
 
 class Menu(models.Model):
     restaurant = models.ForeignKey(Restaurant, on_delete=models.PROTECT, null=False)
@@ -18,4 +27,3 @@ class Menu(models.Model):
 
     class Meta:
         db_table = 'menus'
-
