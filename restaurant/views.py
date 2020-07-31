@@ -1,5 +1,6 @@
 import json
 
+from django.db import IntegrityError
 from django.http import JsonResponse, HttpResponse
 from django.views import View
 
@@ -35,7 +36,12 @@ class RestaurantListView(View):
 
 class MenuView(View):
     def post(self, request):
-        data = json.loads(request.body)
+        try:
+            data = json.loads(request.body)
 
-        menu = Menu.objects.create(**data)
-        return JsonResponse(menu.to_json('id', 'name', 'price'), status=201)
+            menu = Menu.objects.create(**data)
+            return JsonResponse(menu.to_json('id', 'name', 'price'), status=201)
+        except ValueError:
+            return HttpResponse(status=400)
+        except IntegrityError:
+            return HttpResponse(status=400)
